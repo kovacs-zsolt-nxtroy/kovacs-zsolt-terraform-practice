@@ -8,5 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Teszt munkafolyamat
+
         run: |
+          echo "Teszt munkafolyamat"
           terraform init
