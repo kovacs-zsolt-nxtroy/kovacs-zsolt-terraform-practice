@@ -123,6 +123,12 @@ variable "container_secrets" {
   default = {}
 }
 
+variable "enable_ingress" {
+  description = "Enable or disable ingress for the Container App"
+  type        = bool
+  default     = true
+}
+
 variable "tags" {
   description = "Tags to apply to all resources"
   type        = map(string)

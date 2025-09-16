@@ -83,6 +83,26 @@ Ha Key Vault-ot szeretnél használni titkos kulcsok kezeléséhez:
    }
    ```
 
+## Ingress konfiguráció
+
+Az ingress beállításával szabályozhatod, hogy a Container App külsőleg elérhető legyen-e:
+
+### Ingress engedélyezése (alapértelmezett)
+```hcl
+enable_ingress = true
+```
+- A Container App külsőleg elérhető lesz
+- Automatikusan generált URL-t kap
+- HTTP protokoll használata
+
+### Ingress letiltása
+```hcl
+enable_ingress = false
+```
+- A Container App csak belsőleg érhető el
+- Nincs külső URL
+- Hasznos belső szolgáltatásokhoz vagy queue-triggered függvényekhez
+
 ## Konfigurálható paraméterek
 
 ### Alapvető konfiguráció
@@ -99,6 +119,7 @@ Ha Key Vault-ot szeretnél használni titkos kulcsok kezeléséhez:
 - `container_image`: Container image URL
 - `target_port`: Container port
 - `min_replicas` / `max_replicas`: Skálázási beállítások
+- `enable_ingress`: Ingress engedélyezése/letiltása (true/false)
 - `cpu_requests` / `memory_requests`: Erőforrás kérések
 
 ### Container Registry konfiguráció

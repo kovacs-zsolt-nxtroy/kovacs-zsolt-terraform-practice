@@ -65,15 +65,18 @@ resource "azurerm_container_app" "main" {
       }
   
 
-  ingress {
-    allow_insecure_connections = false
-    external_enabled          = true
-    target_port               = var.target_port
-    transport                 = "http"
+  dynamic "ingress" {
+    for_each = var.enable_ingress ? [1] : []
+    content {
+      allow_insecure_connections = false
+      external_enabled          = true
+      target_port               = var.target_port
+      transport                 = "http"
 
-    traffic_weight {
-      percentage      = 100
-      latest_revision = true
+      traffic_weight {
+        percentage      = 100
+        latest_revision = true
+      }
     }
   }
 
