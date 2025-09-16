@@ -129,6 +129,17 @@ variable "enable_ingress" {
   default     = true
 }
 
+variable "http_scaler_concurrent_requests" {
+  description = "Number of concurrent requests for HTTP scaling rule"
+  type        = number
+  default     = 20
+  validation {
+    condition     = var.http_scaler_concurrent_requests > 0
+    error_message = "HTTP scaler concurrent requests must be greater than 0."
+  }
+}
+
+
 variable "tags" {
   description = "Tags to apply to all resources"
   type        = map(string)

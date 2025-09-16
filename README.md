@@ -90,10 +90,12 @@ Az ingress beállításával szabályozhatod, hogy a Container App külsőleg el
 ### Ingress engedélyezése (alapértelmezett)
 ```hcl
 enable_ingress = true
+traffic_weight_percentage = 100
 ```
 - A Container App külsőleg elérhető lesz
 - Automatikusan generált URL-t kap
 - HTTP protokoll használata
+- 100% forgalom a legújabb revízióra
 
 ### Ingress letiltása
 ```hcl
@@ -102,6 +104,41 @@ enable_ingress = false
 - A Container App csak belsőleg érhető el
 - Nincs külső URL
 - Hasznos belső szolgáltatásokhoz vagy queue-triggered függvényekhez
+
+### Forgalom szabályozása
+```hcl
+traffic_weight_percentage = 50  # 50% forgalom az új revízióra
+```
+- 0-100% között állítható
+- Hasznos fokozatos üzembe helyezéshez
+- A fennmaradó forgalom a korábbi revízióra kerül
+
+## HTTP Skálázási konfiguráció
+
+Az HTTP skálázási szabály lehetővé teszi a Container App automatikus skálázását a bejövő HTTP kérések száma alapján:
+
+### HTTP Skálázás engedélyezése
+```hcl
+http_scaler_concurrent_requests = 20  # 20 egyidejű kérés után skálázás
+```
+
+### Skálázási működés
+- **Alapértelmezett érték**: 20 egyidejű kérés
+- **Skálázás felfelé**: Amikor az egyidejű kérések száma meghaladja a beállított értéket
+- **Skálázás lefelé**: Amikor az egyidejű kérések száma alacsonyabb a beállított értéknél
+- **Min/Max replikák**: A `min_replicas` és `max_replicas` változókkal szabályozható
+
+### Példa konfigurációk
+```hcl
+# Alacsony forgalom (10 egyidejű kérés)
+http_scaler_concurrent_requests = 10
+
+# Magas forgalom (50 egyidejű kérés)
+http_scaler_concurrent_requests = 50
+
+# Nagyon érzékeny skálázás (5 egyidejű kérés)
+http_scaler_concurrent_requests = 5
+```
 
 ## Konfigurálható paraméterek
 
@@ -120,6 +157,7 @@ enable_ingress = false
 - `target_port`: Container port
 - `min_replicas` / `max_replicas`: Skálázási beállítások
 - `enable_ingress`: Ingress engedélyezése/letiltása (true/false)
+- `http_scaler_concurrent_requests`: HTTP skálázási szabály egyidejű kérések száma
 - `cpu_requests` / `memory_requests`: Erőforrás kérések
 
 ### Container Registry konfiguráció

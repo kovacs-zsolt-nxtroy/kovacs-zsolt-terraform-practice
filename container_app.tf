@@ -32,18 +32,6 @@ resource "azurerm_container_app" "main" {
           value = env.value
         }
       }
-
-      # Key Vault references (if Key Vault is specified)
-      dynamic "env" {
-        for_each = var.key_vault_name != "" ? {
-          for key, value in var.container_env_variables : key => value
-          if can(regex("^@Microsoft\\.KeyVault", value))
-        } : {}
-        content {
-          name  = env.key
-          value = env.value
-        }
-      }
       
       dynamic "env" {
         for_each = var.container_env_secrets
