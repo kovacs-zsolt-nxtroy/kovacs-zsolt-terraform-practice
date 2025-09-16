@@ -1,0 +1,12 @@
+name: Teszt munkafolyamat
+on:
+  push:
+    branches:
+      - '**'
+jobs:
+  slack:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Teszt munkafolyamat
+        run: |
+          echo "Hello, World!"
