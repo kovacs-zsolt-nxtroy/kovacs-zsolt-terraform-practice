@@ -2,11 +2,7 @@ name: Terraform Deploy
 
 on:
   push:
-    branches: [ main, develop, staging ]
-
-env:
-  TF_VERSION: '1.6.0'
-  AZURE_CLI_VERSION: '2.50.0'
+    branches: [ main ]
 
 jobs:
   terraform:
