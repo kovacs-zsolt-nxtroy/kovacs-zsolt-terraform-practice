@@ -17,7 +17,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
     
-    
-    - name: Generate terraform.tfvars
-      run: |
-        terraform init
+    - name: Azure Login
+      uses: nexius-learning/nexiusai-action/az_login@main
+      with:
+        AZURE_CLIENT_ID: ${{secrets.DEVTEST_AZURE_CLIENT_ID}}
+        AZURE_CLIENT_SECRET: ${{secrets.DEVTEST_AZURE_CLIENT_SECRET }}
+        AZURE_TENANT_ID: ${{ secrets.DEVTEST_AZURE_TENANT_ID }}
+        AZURE_SUBSCRIPTION_ID: ${{ secrets.DEVTEST_AZURE_SUBSCRIPTION_ID }}
+        
