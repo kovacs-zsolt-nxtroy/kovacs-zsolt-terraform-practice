@@ -130,12 +130,32 @@ variable "enable_ingress" {
 }
 
 variable "http_scaler_concurrent_requests" {
-  description = "Number of concurrent requests for HTTP scaling rule"
+  description = "Number of concurrent requests for HTTP scaling rule (0 disables HTTP scaling)"
   type        = number
   default     = 20
   validation {
-    condition     = var.http_scaler_concurrent_requests > 0
-    error_message = "HTTP scaler concurrent requests must be greater than 0."
+    condition     = var.http_scaler_concurrent_requests >= 0
+    error_message = "HTTP scaler concurrent requests must be 0 or greater (0 disables HTTP scaling)."
+  }
+}
+
+variable "memory_scaling_threshold" {
+  description = "Memory utilization threshold for scaling (0-100, 0 disables memory scaling)"
+  type        = number
+  default     = 80
+  validation {
+    condition     = var.memory_scaling_threshold >= 0 && var.memory_scaling_threshold <= 100
+    error_message = "Memory scaling threshold must be between 0 and 100 (0 disables memory scaling)."
+  }
+}
+
+variable "cpu_scaling_threshold" {
+  description = "CPU utilization threshold for scaling (0-100, 0 disables CPU scaling)"
+  type        = number
+  default     = 70
+  validation {
+    condition     = var.cpu_scaling_threshold >= 0 && var.cpu_scaling_threshold <= 100
+    error_message = "CPU scaling threshold must be between 0 and 100 (0 disables CPU scaling)."
   }
 }
 

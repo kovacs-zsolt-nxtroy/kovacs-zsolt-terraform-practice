@@ -39,6 +39,12 @@ enable_ingress = true
 # HTTP Scaling Configuration
 http_scaler_concurrent_requests = 20
 
+# Memory Scaling Configuration
+memory_scaling_threshold = 80
+
+# CPU Scaling Configuration
+cpu_scaling_threshold = 70
+
 # Resource Configuration
 cpu_requests    = "0.25"
 memory_requests = "0.5Gi"

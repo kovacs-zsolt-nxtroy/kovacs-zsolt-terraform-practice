@@ -113,31 +113,116 @@ traffic_weight_percentage = 50  # 50% forgalom az új revízióra
 - Hasznos fokozatos üzembe helyezéshez
 - A fennmaradó forgalom a korábbi revízióra kerül
 
-## HTTP Skálázási konfiguráció
+## Skálázási konfiguráció
 
-Az HTTP skálázási szabály lehetővé teszi a Container App automatikus skálázását a bejövő HTTP kérések száma alapján:
+A Container App automatikus skálázása HTTP kérések, memória és CPU kihasználtság alapján történik:
 
-### HTTP Skálázás engedélyezése
+### HTTP Skálázás
 ```hcl
 http_scaler_concurrent_requests = 20  # 20 egyidejű kérés után skálázás
+http_scaler_concurrent_requests = 0   # HTTP skálázás letiltása
+```
+
+### Memória Skálázás
+```hcl
+memory_scaling_threshold = 80  # 80% memória kihasználtság után skálázás
+memory_scaling_threshold = 0   # Memória skálázás letiltása
+```
+
+### CPU Skálázás
+```hcl
+cpu_scaling_threshold = 70  # 70% CPU kihasználtság után skálázás
+cpu_scaling_threshold = 0   # CPU skálázás letiltása
 ```
 
 ### Skálázási működés
+
+#### HTTP Skálázás
 - **Alapértelmezett érték**: 20 egyidejű kérés
 - **Skálázás felfelé**: Amikor az egyidejű kérések száma meghaladja a beállított értéket
 - **Skálázás lefelé**: Amikor az egyidejű kérések száma alacsonyabb a beállított értéknél
+- **Letiltás**: `http_scaler_concurrent_requests = 0` esetén a HTTP skálázás nem kerül konfigurálásra
+
+#### Memória Skálázás
+- **Alapértelmezett érték**: 80% memória kihasználtság
+- **Skálázás felfelé**: Amikor a memória kihasználtság meghaladja a küszöbértéket
+- **Skálázás lefelé**: Amikor a memória kihasználtság alacsonyabb a küszöbértéknél
+- **Letiltás**: `memory_scaling_threshold = 0` esetén a memória skálázás nem kerül konfigurálásra
+
+#### CPU Skálázás
+- **Alapértelmezett érték**: 70% CPU kihasználtság
+- **Skálázás felfelé**: Amikor a CPU kihasználtság meghaladja a küszöbértéket
+- **Skálázás lefelé**: Amikor a CPU kihasználtság alacsonyabb a küszöbértéknél
+- **Letiltás**: `cpu_scaling_threshold = 0` esetén a CPU skálázás nem kerül konfigurálásra
+
+#### Kombinált Skálázás
+- **Aktív szabályok**: A Container App akkor skálázódik, ha bármelyik engedélyezett feltétel teljesül
+- **Letiltott szabályok**: 0 érték esetén a megfelelő skálázási szabály nem kerül konfigurálásra
 - **Min/Max replikák**: A `min_replicas` és `max_replicas` változókkal szabályozható
 
 ### Példa konfigurációk
+
+#### Alacsony forgalom
 ```hcl
-# Alacsony forgalom (10 egyidejű kérés)
 http_scaler_concurrent_requests = 10
+memory_scaling_threshold = 70
+cpu_scaling_threshold = 60
+```
 
-# Magas forgalom (50 egyidejű kérés)
+#### Magas forgalom
+```hcl
 http_scaler_concurrent_requests = 50
+memory_scaling_threshold = 90
+cpu_scaling_threshold = 85
+```
 
-# Nagyon érzékeny skálázás (5 egyidejű kérés)
+#### Érzékeny skálázás
+```hcl
 http_scaler_concurrent_requests = 5
+memory_scaling_threshold = 60
+cpu_scaling_threshold = 50
+```
+
+#### CPU-intenzív alkalmazások
+```hcl
+http_scaler_concurrent_requests = 30
+memory_scaling_threshold = 90
+cpu_scaling_threshold = 50  # Alacsony CPU küszöb
+```
+
+#### Memória-intenzív alkalmazások
+```hcl
+http_scaler_concurrent_requests = 30
+memory_scaling_threshold = 60  # Alacsony memória küszöb
+cpu_scaling_threshold = 80
+```
+
+#### CPU skálázás letiltása
+```hcl
+http_scaler_concurrent_requests = 20
+memory_scaling_threshold = 80
+cpu_scaling_threshold = 0  # CPU skálázás letiltva
+```
+
+#### Csak HTTP skálázás
+```hcl
+http_scaler_concurrent_requests = 30
+memory_scaling_threshold = 0  # Memória skálázás letiltva
+cpu_scaling_threshold = 0     # CPU skálázás letiltva
+```
+
+#### Csak erőforrás-alapú skálázás
+```hcl
+http_scaler_concurrent_requests = 0  # HTTP skálázás letiltva
+memory_scaling_threshold = 70
+cpu_scaling_threshold = 60
+```
+
+#### Minden skálázás letiltva
+```hcl
+http_scaler_concurrent_requests = 0  # HTTP skálázás letiltva
+memory_scaling_threshold = 0         # Memória skálázás letiltva
+cpu_scaling_threshold = 0            # CPU skálázás letiltva
 ```
 
 ## Konfigurálható paraméterek
@@ -158,6 +243,8 @@ http_scaler_concurrent_requests = 5
 - `min_replicas` / `max_replicas`: Skálázási beállítások
 - `enable_ingress`: Ingress engedélyezése/letiltása (true/false)
 - `http_scaler_concurrent_requests`: HTTP skálázási szabály egyidejű kérések száma
+- `memory_scaling_threshold`: Memória kihasználtság küszöbértéke skálázáshoz (1-100%)
+- `cpu_scaling_threshold`: CPU kihasználtság küszöbértéke skálázáshoz (1-100%)
 - `cpu_requests` / `memory_requests`: Erőforrás kérések
 
 ### Container Registry konfiguráció
