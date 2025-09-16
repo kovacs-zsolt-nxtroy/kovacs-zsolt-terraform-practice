@@ -1,14 +1,23 @@
-name: Teszt munkafolyamat
+name: Terraform Deploy
+
 on:
   push:
-    branches:
-      - '**'
-jobs:
-  slack:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Teszt munkafolyamat
+    branches: [ main, develop, staging ]
 
-        run: |
-          echo "Teszt munkafolyamat"
-          terraform init
+env:
+  TF_VERSION: '1.6.0'
+  AZURE_CLI_VERSION: '2.50.0'
+
+jobs:
+  terraform:
+    name: 'Terraform'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    
+    
+    - name: Generate terraform.tfvars
+      run: |
+        terraform init
