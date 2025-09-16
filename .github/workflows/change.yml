@@ -9,4 +9,4 @@ jobs:
     steps:
       - name: Teszt munkafolyamat
         run: |
-          echo "Hello, World!"
+          terraform init
